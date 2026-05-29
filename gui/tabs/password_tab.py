@@ -7,24 +7,18 @@ from .base import TabBase
 
 
 class PasswordTab(TabBase):
-    def __init__(self, master, status_callback, password_generator) -> None:
+    def __init__(self, master, status_callback, password_generator, background_color: str = "#171717", surface_color: str = "#242424") -> None:
         self.password_generator = password_generator
-        super().__init__(master, status_callback)
+        super().__init__(master, status_callback, background_color, surface_color)
         self._build_ui()
 
     def _build_ui(self) -> None:
-        overview = self.make_card(
-            "Password generator",
-            "Create a strong password with a customizable length.",
-        )
-        overview.grid(row=0, column=0, sticky="ew", pady=(0, 14))
-
         generator_card = self.make_card("Generate password", "Use a length of at least 4 characters.")
-        generator_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
+        generator_card.grid(row=0, column=0, sticky="ew", pady=(0, 14))
         generator_card.grid_columnconfigure(0, weight=1)
 
         length_label = ctk.CTkLabel(generator_card, text="Length")
-        length_label.grid(row=2, column=0, sticky="w", padx=18, pady=(0, 6))
+        length_label.grid(row=2, column=0, sticky="w", padx=18, pady=(14, 6))
 
         self.length_entry = ctk.CTkEntry(generator_card, placeholder_text="16")
         self.length_entry.grid(row=3, column=0, sticky="ew", padx=18)
@@ -41,7 +35,7 @@ class PasswordTab(TabBase):
         copy_button.grid(row=0, column=1, sticky="ew", padx=(8, 0))
 
         output_card = self.make_card("Generated password", "The result appears below and can be copied to the clipboard.")
-        output_card.grid(row=2, column=0, sticky="ew", pady=(0, 14))
+        output_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
         output_card.grid_columnconfigure(0, weight=1)
 
         self.output_box = self.create_output_box(output_card, height=120)

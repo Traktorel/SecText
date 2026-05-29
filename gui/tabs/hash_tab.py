@@ -6,24 +6,18 @@ from .base import TabBase
 
 
 class HashTab(TabBase):
-    def __init__(self, master, status_callback, hash_generator) -> None:
+    def __init__(self, master, status_callback, hash_generator, background_color: str = "#171717", surface_color: str = "#242424") -> None:
         self.hash_generator = hash_generator
-        super().__init__(master, status_callback)
+        super().__init__(master, status_callback, background_color, surface_color)
         self._build_ui()
 
     def _build_ui(self) -> None:
-        overview = self.make_card(
-            "SHA-256 hash generator",
-            "Create a one-way fingerprint from any text input.",
-        )
-        overview.grid(row=0, column=0, sticky="ew", pady=(0, 14))
-
         input_card = self.make_card("Input text", "Hashes are useful for checking integrity and verifying files.")
-        input_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
+        input_card.grid(row=0, column=0, sticky="ew", pady=(0, 14))
         input_card.grid_columnconfigure(0, weight=1)
 
         text_label = ctk.CTkLabel(input_card, text="Text to hash")
-        text_label.grid(row=2, column=0, sticky="w", padx=18, pady=(0, 6))
+        text_label.grid(row=2, column=0, sticky="w", padx=18, pady=(14, 6))
 
         self.input_box = ctk.CTkTextbox(input_card, height=160, wrap="word")
         self.input_box.grid(row=3, column=0, sticky="ew", padx=18)
@@ -42,7 +36,7 @@ class HashTab(TabBase):
         clear_button.grid(row=0, column=2, sticky="ew", padx=(8, 0))
 
         output_card = self.make_card("SHA-256 output", "The hash is shown as a 64-character hexadecimal string.")
-        output_card.grid(row=2, column=0, sticky="ew", pady=(0, 14))
+        output_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
         output_card.grid_columnconfigure(0, weight=1)
 
         self.output_box = self.create_output_box(output_card, height=120)

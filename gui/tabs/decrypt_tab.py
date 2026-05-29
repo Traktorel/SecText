@@ -9,34 +9,29 @@ from .base import TabBase
 
 
 class DecryptTab(TabBase):
-    def __init__(self, master, status_callback, crypto_manager) -> None:
+    def __init__(self, master, status_callback, crypto_manager, background_color: str = "#171717", surface_color: str = "#242424") -> None:
         self.crypto_manager = crypto_manager
         self.input_file_path = ""
         self.output_file_path = ""
-        super().__init__(master, status_callback)
+        self.content_font = ctk.CTkFont(size=14)
+        super().__init__(master, status_callback, background_color, surface_color)
         self._build_ui()
 
     def _build_ui(self) -> None:
-        overview = self.make_card(
-            "Decrypt text and files",
-            "Use the same password that was used when the content was encrypted.",
-        )
-        overview.grid(row=0, column=0, sticky="ew", pady=(0, 14))
-
         text_card = self.make_card("Text decryption", "Paste the encrypted string, then enter the matching password.")
-        text_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
+        text_card.grid(row=0, column=0, sticky="ew", pady=(0, 14))
         text_card.grid_columnconfigure(0, weight=1)
 
-        text_label = ctk.CTkLabel(text_card, text="Encrypted text")
-        text_label.grid(row=2, column=0, sticky="w", padx=18, pady=(0, 6))
+        text_label = ctk.CTkLabel(text_card, text="Encrypted text", font=self.content_font)
+        text_label.grid(row=2, column=0, sticky="w", padx=18, pady=(14, 6))
 
-        self.encrypted_text_box = ctk.CTkTextbox(text_card, height=160, wrap="word")
+        self.encrypted_text_box = ctk.CTkTextbox(text_card, height=160, wrap="word", font=self.content_font)
         self.encrypted_text_box.grid(row=3, column=0, sticky="ew", padx=18)
 
-        password_label = ctk.CTkLabel(text_card, text="Password")
+        password_label = ctk.CTkLabel(text_card, text="Password", font=self.content_font)
         password_label.grid(row=4, column=0, sticky="w", padx=18, pady=(14, 6))
 
-        self.password_entry = ctk.CTkEntry(text_card, placeholder_text="Enter the decryption password", show="*")
+        self.password_entry = ctk.CTkEntry(text_card, placeholder_text="Enter the decryption password", show="*", font=self.content_font)
         self.password_entry.grid(row=5, column=0, sticky="ew", padx=18)
 
         button_row = ctk.CTkFrame(text_card, fg_color="transparent")
@@ -53,7 +48,7 @@ class DecryptTab(TabBase):
         clear_button.grid(row=0, column=2, sticky="ew", padx=(8, 0))
 
         output_card = self.make_card("Decrypted output", "The decrypted text appears here after a successful unlock.")
-        output_card.grid(row=2, column=0, sticky="ew", pady=(0, 14))
+        output_card.grid(row=1, column=0, sticky="ew", pady=(0, 14))
         output_card.grid_columnconfigure(0, weight=1)
 
         self.decrypted_output = self.create_output_box(output_card, height=160)
@@ -61,38 +56,29 @@ class DecryptTab(TabBase):
         self.set_output_text(self.decrypted_output, "")
 
         file_card = self.make_card("File decryption", "Load a .sectext file and save the restored file to disk.")
-        file_card.grid(row=3, column=0, sticky="ew", pady=(0, 14))
+        file_card.grid(row=2, column=0, sticky="ew", pady=(0, 14))
         file_card.grid_columnconfigure(0, weight=1)
-        file_card.grid_columnconfigure(1, weight=1)
 
-        left_block = ctk.CTkFrame(file_card, fg_color="transparent")
-        left_block.grid(row=2, column=0, sticky="ew", padx=18, pady=(0, 18))
-        left_block.grid_columnconfigure(0, weight=1)
-
-        right_block = ctk.CTkFrame(file_card, fg_color="transparent")
-        right_block.grid(row=2, column=1, sticky="ew", padx=18, pady=(0, 18))
-        right_block.grid_columnconfigure(0, weight=1)
-
-        input_title = ctk.CTkLabel(left_block, text="Encrypted file")
-        input_title.grid(row=0, column=0, sticky="w", pady=(0, 6))
+        input_title = ctk.CTkLabel(file_card, text="Encrypted file", font=self.content_font)
+        input_title.grid(row=2, column=0, sticky="w", padx=18, pady=(14, 6))
         self.input_file_label = ctk.StringVar(value="No file selected")
-        input_value = ctk.CTkLabel(left_block, textvariable=self.input_file_label, anchor="w", wraplength=400)
-        input_value.grid(row=1, column=0, sticky="ew")
+        input_value = ctk.CTkLabel(file_card, textvariable=self.input_file_label, anchor="w", wraplength=720, font=self.content_font)
+        input_value.grid(row=3, column=0, sticky="ew", padx=18)
 
-        choose_input_button = ctk.CTkButton(left_block, text="Choose File", command=self.choose_input_file)
-        choose_input_button.grid(row=2, column=0, sticky="ew", pady=(10, 0))
+        choose_input_button = ctk.CTkButton(file_card, text="Choose File", command=self.choose_input_file)
+        choose_input_button.grid(row=4, column=0, sticky="ew", padx=18, pady=(10, 0))
 
-        output_title = ctk.CTkLabel(right_block, text="Output file")
-        output_title.grid(row=0, column=0, sticky="w", pady=(0, 6))
+        output_title = ctk.CTkLabel(file_card, text="Output file", font=self.content_font)
+        output_title.grid(row=5, column=0, sticky="w", padx=18, pady=(14, 6))
         self.output_file_label = ctk.StringVar(value="No output selected")
-        output_value = ctk.CTkLabel(right_block, textvariable=self.output_file_label, anchor="w", wraplength=400)
-        output_value.grid(row=1, column=0, sticky="ew")
+        output_value = ctk.CTkLabel(file_card, textvariable=self.output_file_label, anchor="w", wraplength=720, font=self.content_font)
+        output_value.grid(row=6, column=0, sticky="ew", padx=18)
 
-        choose_output_button = ctk.CTkButton(right_block, text="Choose Save As", command=self.choose_output_file)
-        choose_output_button.grid(row=2, column=0, sticky="ew", pady=(10, 0))
+        choose_output_button = ctk.CTkButton(file_card, text="Choose Save As", command=self.choose_output_file)
+        choose_output_button.grid(row=7, column=0, sticky="ew", padx=18, pady=(10, 0))
 
         file_button_row = ctk.CTkFrame(file_card, fg_color="transparent")
-        file_button_row.grid(row=3, column=0, columnspan=2, sticky="ew", padx=18, pady=(0, 18))
+        file_button_row.grid(row=8, column=0, sticky="ew", padx=18, pady=(14, 18))
         file_button_row.grid_columnconfigure(0, weight=1)
 
         decrypt_file_button = ctk.CTkButton(file_button_row, text="Decrypt File", command=self.decrypt_file)

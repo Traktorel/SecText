@@ -1,7 +1,6 @@
 # SecText
 
-SecText (SecureText) is a beginner-friendly cybersecurity app built with Python and CustomTkinter.
-It focuses on a clean, modern desktop interface with modular code that can be extended later.
+SecText (SecureText) is a beginner-friendly cybersecurity app built with Python made purely for fun.
 
 ## Features
 
