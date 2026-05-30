@@ -41,7 +41,6 @@ class SecTextApp(ctk.CTk):
         self._build_header()
         self._build_tabs()
         self._build_status_bar()
-        self._bind_editor_shortcuts()
         self._update_theme_button()
 
     def _build_background(self) -> None:
@@ -197,72 +196,6 @@ class SecTextApp(ctk.CTk):
         current_mode = ctk.get_appearance_mode()
         button_text = "Switch to Light" if current_mode == "Dark" else "Switch to Dark"
         self.theme_button.configure(text=button_text)
-
-    def _bind_editor_shortcuts(self) -> None:
-        self.bind_all("<Control-a>", self._select_all_shortcut, add="+")
-        self.bind_all("<Control-A>", self._select_all_shortcut, add="+")
-        self.bind_all("<Control-c>", self._copy_shortcut, add="+")
-        self.bind_all("<Control-C>", self._copy_shortcut, add="+")
-        self.bind_all("<Control-x>", self._cut_shortcut, add="+")
-        self.bind_all("<Control-X>", self._cut_shortcut, add="+")
-        self.bind_all("<Control-v>", self._paste_shortcut, add="+")
-        self.bind_all("<Control-V>", self._paste_shortcut, add="+")
-
-    @staticmethod
-    def _focused_editable_widget(widget):
-        class_name = widget.winfo_class()
-        if class_name in {"Entry", "Text"}:
-            return widget
-
-        parent = getattr(widget, "master", None)
-        if parent is None:
-            return None
-
-        return SecTextApp._focused_editable_widget(parent)
-
-    @staticmethod
-    def _select_all_shortcut(event):
-        widget = SecTextApp._focused_editable_widget(event.widget)
-        if widget is None:
-            return
-
-        class_name = widget.winfo_class()
-        if class_name == "Entry":
-            widget.select_range(0, "end")
-            widget.icursor("end")
-        elif class_name == "Text":
-            widget.tag_add("sel", "1.0", "end")
-            widget.mark_set("insert", "1.0")
-            widget.see("insert")
-
-        return "break"
-
-    @staticmethod
-    def _copy_shortcut(event):
-        widget = SecTextApp._focused_editable_widget(event.widget)
-        if widget is None:
-            return
-
-        widget.event_generate("<<Copy>>")
-        return "break"
-
-    @staticmethod
-    def _cut_shortcut(event):
-        widget = SecTextApp._focused_editable_widget(event.widget)
-        if widget is None:
-            return
-
-        widget.event_generate("<<Cut>>")
-        return "break"
-
-    @staticmethod
-    def _paste_shortcut(event):
-        widget = SecTextApp._focused_editable_widget(event.widget)
-        if widget is None:
-            return
-
-        widget.event_generate("<<Paste>>")
-        return "break"
 
     def set_status(self, message: str) -> None:
         self.status_var.set(message)
